@@ -23,7 +23,7 @@ def pozdrav():
 def generuj_tajne_cislo():
     prvni = random.choice("123456789")
     zbytek = random.sample([c for c in "0123456789" if c != prvni], 3)
-    return prvcni + ''.join(zbytek)
+    return prvni + ''.join(zbytek)
 
 def je_validni_tip(tip):
     if len(tip) != 4:
