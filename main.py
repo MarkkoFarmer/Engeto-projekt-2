@@ -8,22 +8,22 @@ email:   sedlak.marek14@icloud.com
 import random
 import time
 
-def pozdrav():
-    print("Hi there!")
-    print("-----------------------------------------------")
-    print("I've generated a random 4 digit number for you.")
-    print("Let's play a bulls and cows game.")
-    print("-----------------------------------------------")
-    print("Enter a number:")
+def vypis_hranic():
     print("-----------------------------------------------")
 
+def pozdrav():
+    print("Hi there!")
+    vypis_hranic()
+    print("I've generated a random 4 digit number for you.")
+    print("Let's play a bulls and cows game.")
+    vypis_hranic()
+    print("Enter a number:")
+    vypis_hranic()
+
 def generuj_tajne_cislo():
-    # první číslice 1-9 (nesmí být 0), další 3 libovolné 0-9 bez duplicit
-    while True:
-        cislo = random.sample('123456789', 1) + random.sample('0123456789', 3)
-        cislo_str = ''.join(cislo)
-        if len(set(cislo_str)) == 4:
-            return cislo_str
+    prvni = random.choice("123456789")
+    zbytek = random.sample([c for c in "0123456789" if c != prvni], 3)
+    return prvcni + ''.join(zbytek)
 
 def je_validni_tip(tip):
     if len(tip) != 4:
@@ -41,8 +41,8 @@ def je_validni_tip(tip):
     return True
 
 def vyhodnot_tip(tip, tajne_cislo):
-    bulls = sum(tip[i] == tajne_cislo[i] for i in range(4))
-    cows = sum((c in tajne_cislo) for c in tip) - bulls
+    bulls = sum(a == b for a, b in zip(tip, tajne_cislo))
+    cows = sum(min(tip.count(d), tajne_cislo.count(d)) for d in set(tip)) - bulls
     return bulls, cows
 
 def formatuj_bulls_cows(bulls, cows):
@@ -53,7 +53,7 @@ def formatuj_bulls_cows(bulls, cows):
 def hra():
     pozdrav()
     tajne_cislo = generuj_tajne_cislo()
-    # print(f"DEBUG tajne číslo: {tajne_cislo}")  # pro ladění
+    # print(f"DEBUG: Tajné číslo je {tajne_cislo}")  # Pro ladění
 
     pocet_pokusu = 0
     start = time.time()
@@ -71,23 +71,26 @@ def hra():
             cas = konec - start
             print("Correct, you've guessed the right number")
             print(f"in {pocet_pokusu} guess{'es' if pocet_pokusu != 1 else ''}!")
-            print("-----------------------------------------------")
+            vypis_hranic()
             print("That's amazing!")
             print(f"Time taken: {cas:.2f} seconds.")
-            print("-----------------------------------------------")
+            vypis_hranic()
             return pocet_pokusu, cas
 
         bulls_text, cows_text = formatuj_bulls_cows(bulls, cows)
         print(f"{bulls_text}, {cows_text}")
-        print("-----------------------------------------------")
+        vypis_hranic()
 
 def hlavni():
     statistiky = []
     while True:
         pokusy, cas = hra()
-        statistiky.append(pokusy)
-        prumer = sum(statistiky) / len(statistiky)
-        print(f"Average number of guesses: {prumer:.2f}")
+        statistiky.append({"pokusy": pokusy, "cas": cas})
+
+        prumer_pokusu = sum(stat["pokusy"] for stat in statistiky) / len(statistiky)
+        prumer_casu = sum(stat["cas"] for stat in statistiky) / len(statistiky)
+        print(f"Average number of guesses: {prumer_pokusu:.2f}")
+        print(f"Average time: {prumer_casu:.2f} seconds")
 
         znovu = input("Play again? (y/n): ").strip().lower()
         if znovu != 'y':
