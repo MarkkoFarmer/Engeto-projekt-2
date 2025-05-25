@@ -1,5 +1,5 @@
 """
-main.py: druhý projekt do Engeto Online Python Akademie
+main.py: druhý projekt do Engeto Online Python Akademie (Bulls & Cows)
 
 author:  Marek Sedlák
 email:   sedlak.marek14@icloud.com
